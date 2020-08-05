@@ -1,7 +1,8 @@
 # ConsoleHub
 
 ## Introduction
-A tool to help you manage your console applications.
+A tool to help you manage your console applications.  
+![Screenshot](https://raw.githubusercontent.com/1354092549/ConsoleHub/master/Screenshot.png)  
 
 ## Installation
 Just go to the release page and download the binary files
