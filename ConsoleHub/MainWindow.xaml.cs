@@ -69,13 +69,35 @@ namespace ConsoleHub
             {
                 var end = command.IndexOf('"', 1);
                 fileName = command.Substring(1, end - 1).TrimEnd();
-                arguments = command.Substring(end + 1).TrimStart();
+                if (end + 1 >= command.Length)
+                {
+                    arguments = "";
+                }
+                else
+                {
+                    arguments = command.Substring(end + 1).TrimStart();
+                }
             }
             else
             {
                 var end = command.IndexOf(' ');
-                fileName = command.Substring(0, end);
-                arguments = command.Substring(end + 1).TrimStart();
+                if (end == -1)
+                {
+                    fileName = command;
+                    arguments = "";
+                }
+                else
+                {
+                    fileName = command.Substring(0, end);
+                    if (end + 1 >= command.Length)
+                    {
+                        arguments = "";
+                    }
+                    else
+                    {
+                        arguments = command.Substring(end + 1).TrimStart();
+                    }
+                }
             }
             await ExecuteCommand(fileName, arguments);
         }
