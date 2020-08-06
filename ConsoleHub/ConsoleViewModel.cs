@@ -10,7 +10,20 @@ namespace ConsoleHub
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public WPFConsoleControl Content { get; set; }
-        public string Title => $"{Content.ProcessInterface.Process.ProcessName} (PID: {Content.ProcessInterface.Process.Id})";
+        public string Title
+        {
+            get
+            {
+                try
+                {
+                    return $"{Content.ProcessInterface.Process.ProcessName} (PID: {Content.ProcessInterface.Process.Id})";
+                }
+                catch (Exception)
+                {
+                    return "Unknown";
+                }
+            }
+        }
 
         public override bool Equals(object obj)
         {

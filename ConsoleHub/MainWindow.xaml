@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:ConsoleHub"
         xmlns:ccw="clr-namespace:ConsoleControl.WPF;assembly=ConsoleControl.WPF" xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
-        Title="ConsoleHub" Height="450" Width="800" d:DataContext="{d:DesignInstance {x:Type local:MainViewModel}}">
+        Title="ConsoleHub" Height="450" Width="800" d:DataContext="{d:DesignInstance {x:Type local:MainViewModel}}"
+        Closed="Window_Closed">
     <DockPanel>
         <tb:TaskbarIcon 
             x:Name="ConsoleHubTaskbarIcon" 

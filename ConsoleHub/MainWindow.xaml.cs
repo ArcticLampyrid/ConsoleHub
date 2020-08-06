@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using System.IO;
 using Path = System.IO.Path;
+using System.Threading;
 
 namespace ConsoleHub
 {
@@ -219,6 +220,40 @@ namespace ConsoleHub
         private void KillMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ViewModel?.CurrectConsole?.Content?.StopProcess();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            var sendCtrlCFile = Path.Combine(Path.GetDirectoryName(typeof(MainWindow).Assembly.Location), "SendCtrlC.exe");
+            if (File.Exists(sendCtrlCFile))
+            {
+                foreach (var console in ViewModel.Consoles)
+                {
+                        try
+                        {
+                            var pid = console?.Content?.ProcessInterface?.Process?.Id;
+                            if (pid.HasValue)
+                            {
+                                Process.Start(sendCtrlCFile, $"{pid} 1"); //Ctrl+Break Signal
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
+                }
+                Thread.Sleep(2000);
+            }
+            foreach (var console in ViewModel.Consoles)
+            {
+                try
+                {
+                    console?.Content?.ProcessInterface?.StopProcess();
+                }
+                catch (Exception)
+                {
+                }
+            }
+            ViewModel.Consoles.Clear();
         }
     }
 }
