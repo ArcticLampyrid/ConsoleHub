@@ -54,6 +54,10 @@ namespace ConsoleHub
             var commands = await File.ReadAllLinesAsync(fileName);
             foreach (var command in commands)
             {
+                if (command.TrimStart().StartsWith("#"))
+                {
+                    continue;
+                }
                 await ExecuteCommand(command);
             }
         }

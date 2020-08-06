@@ -16,7 +16,8 @@ Special Commands (case insensitive):
 Example:
 ```
 cmd /k echo a
-*wait 1200
+# This is a comment
+*delay 1200
 cmd /k echo b
 cmd /k echo c
 ```
