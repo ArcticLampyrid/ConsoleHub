@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.IO;
 using Path = System.IO.Path;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace ConsoleHub
 {
@@ -26,6 +27,10 @@ namespace ConsoleHub
     public partial class MainWindow : Window
     {
         private readonly MainViewModel ViewModel = new MainViewModel();
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern int GetConsoleCP();
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern int GetConsoleOutputCP();
         public MainWindow()
         {
             this.DataContext = ViewModel;
@@ -124,7 +129,21 @@ namespace ConsoleHub
             model.Content.ProcessInterface.OnProcessExit +=
                 (sender, eventArgs) =>
                     Dispatcher.Invoke(() => ViewModel.Consoles.Remove(model));
-            model.Content.StartProcess(fileName, arguments);
+            model.Content.StartProcess(new ProcessStartInfo() {
+                FileName = fileName,
+                Arguments = arguments,
+                StandardOutputEncoding = Encoding.GetEncoding(GetConsoleOutputCP()),
+                StandardErrorEncoding = Encoding.GetEncoding(GetConsoleOutputCP()),
+                StandardInputEncoding = Encoding.GetEncoding(GetConsoleCP())
+            });
+            try
+            {
+                GC.KeepAlive(model.Content.ProcessInterface.Process.Id);
+            }
+            catch (Exception)
+            {
+                return;
+            }
             ViewModel.Consoles.Add(model);
             ViewModel.CurrectConsoleIndex = ViewModel.Consoles.Count - 1;
         }
