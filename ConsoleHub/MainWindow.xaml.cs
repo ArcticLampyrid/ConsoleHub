@@ -28,9 +28,8 @@ namespace ConsoleHub
     {
         private readonly MainViewModel ViewModel = new MainViewModel();
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern int GetConsoleCP();
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern int GetConsoleOutputCP();
+        private static extern int GetOEMCP();
+        private static int codepage = GetOEMCP();
         public MainWindow()
         {
             this.DataContext = ViewModel;
@@ -118,6 +117,15 @@ namespace ConsoleHub
                 await Task.Delay(Convert.ToInt32(arguments));
                 return;
             }
+            if (fileName.ToLowerInvariant() == "*codepage")
+            {
+                codepage = Convert.ToInt32(arguments);
+                if (codepage == 0)
+                {
+                    codepage = GetOEMCP();
+                }
+                return;
+            }
             if (string.IsNullOrWhiteSpace(fileName))
             {
                 return;
@@ -132,9 +140,9 @@ namespace ConsoleHub
             model.Content.StartProcess(new ProcessStartInfo() {
                 FileName = fileName,
                 Arguments = arguments,
-                StandardOutputEncoding = Encoding.GetEncoding(GetConsoleOutputCP()),
-                StandardErrorEncoding = Encoding.GetEncoding(GetConsoleOutputCP()),
-                StandardInputEncoding = Encoding.GetEncoding(GetConsoleCP())
+                StandardOutputEncoding = Encoding.GetEncoding(codepage),
+                StandardErrorEncoding = Encoding.GetEncoding(codepage),
+                StandardInputEncoding = Encoding.GetEncoding(codepage)
             });
             try
             {
